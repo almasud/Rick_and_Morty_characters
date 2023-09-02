@@ -24,6 +24,10 @@ class App : Application() {
             object Graph {
                 const val HOME_GRAPH = "home_graph"
             }
+
+            object Argument {
+                const val CHARACTER_ID = "character"
+            }
         }
     }
 }

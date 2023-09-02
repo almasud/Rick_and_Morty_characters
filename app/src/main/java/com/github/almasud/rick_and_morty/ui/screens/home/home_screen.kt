@@ -7,6 +7,7 @@
 package com.github.almasud.rick_and_morty.ui.screens.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,6 +58,7 @@ import com.github.almasud.rick_and_morty.domain.model.dummyCharacters
 import com.github.almasud.rick_and_morty.ui.NavItem
 import com.github.almasud.rick_and_morty.ui.nav_graph.HomeNavGraph
 import com.github.almasud.rick_and_morty.ui.theme.RickAndMortyTheme
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -91,7 +94,8 @@ fun TopBar(navController: NavController) {
                 text = stringResource(id = R.string.app_name),
                 fontSize = 16.sp,
                 style = MaterialTheme.typography.bodySmall,
-                fontWeight = FontWeight.W500
+                fontWeight = FontWeight.W800,
+                color = Color.Black
             )
         },
         navigationIcon = {
@@ -108,7 +112,9 @@ fun TopBar(navController: NavController) {
 }
 
 @Composable
-fun HomeScreen() {
+fun CharactersScreen(homeVM: HomeVM) {
+    val coroutineScope = rememberCoroutineScope()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -118,19 +124,26 @@ fun HomeScreen() {
         LazyColumn(
             content = {
                 items(items = dummyCharacters, itemContent = { character ->
-                    CharacterItem(character = character)
+                    CharacterItem(character = character) {
+                        coroutineScope.launch {
+                            homeVM.showProfileScreen(characterId = it)
+                        }
+                    }
                 })
             })
     }
 }
 
 @Composable
-fun CharacterItem(character: Character) {
+fun CharacterItem(character: Character, onItemClickListener: ((String) -> Unit)? = null) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(bottom = 8.dp),
+            .padding(bottom = 8.dp)
+            .clickable {
+                onItemClickListener?.invoke(character.id)
+            },
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(4.dp),
         elevation = CardDefaults.cardElevation(4.dp)
@@ -157,7 +170,6 @@ fun CharacterItem(character: Character) {
                         )
                         .align(Alignment.CenterVertically)
                 ) {
-                    // You can use CoilImage or Image with a URL to load the user's image
                     AsyncImage(
                         model = character.image,
                         contentDescription = stringResource(id = R.string.avatar), // Provide a meaningful description
@@ -177,8 +189,9 @@ fun CharacterItem(character: Character) {
                 ) {
                     Text(
                         text = character.name,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
+                        fontWeight = FontWeight.W800,
+                        fontSize = 16.sp,
+                        color = Color.Black
                     )
                     Row(
                         modifier = Modifier
@@ -198,7 +211,7 @@ fun CharacterItem(character: Character) {
                         Text(
                             text = character.status,
                             fontSize = 14.sp,
-                            color = Color.Gray,
+                            color = Color.Black
                         )
                     }
                 }
