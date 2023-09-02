@@ -52,6 +52,7 @@ android {
 
 dependencies {
     val navVersion = "2.7.1"
+    val accompanistVersion = "0.28.0"
 
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
@@ -69,6 +70,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     // Coil image
     implementation("io.coil-kt:coil-compose:2.4.0")
+    // Placeholder
+    implementation("com.google.accompanist:accompanist-placeholder:$accompanistVersion")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

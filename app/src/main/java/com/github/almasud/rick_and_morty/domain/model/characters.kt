@@ -15,7 +15,7 @@ import kotlinx.parcelize.Parcelize
 
 val dummyCharacters = listOf(
     Character(
-        id = "1",
+        id = 1,
         name = "Mr. One",
         image = "https://picsum.photos/id/1/200/300",
         status = "Alive",
@@ -25,7 +25,7 @@ val dummyCharacters = listOf(
         location = Location(name = "Location One")
     ),
     Character(
-        id = "2",
+        id = 2,
         name = "Mr. One",
         image = "https://picsum.photos/id/2df/200/300",
         status = "Alive",
@@ -35,7 +35,7 @@ val dummyCharacters = listOf(
         location = Location(name = "Location One")
     ),
     Character(
-        id = "3",
+        id = 3,
         name = "Mr. Two",
         image = "https://picsum.photos/id/3/200/300",
         status = "Dead",
@@ -45,7 +45,7 @@ val dummyCharacters = listOf(
         location = Location(name = "Location Two")
     ),
     Character(
-        id = "4",
+        id = 4,
         name = "Mrs. One",
         image = "https://picsum.photos/id/4/200/300",
         status = "Alive",
@@ -55,7 +55,7 @@ val dummyCharacters = listOf(
         location = Location(name = "Location One")
     ),
     Character(
-        id = "5",
+        id = 5,
         name = "Mr. Three",
         image = "https://picsum.photos/id/1/200/300",
         status = "Alive",
@@ -65,7 +65,7 @@ val dummyCharacters = listOf(
         location = Location(name = "Location Three")
     ),
     Character(
-        id = "6",
+        id = 6,
         name = "Mrs. Two",
         image = "https://picsum.photos/id/5/200/300",
         status = "Dead",
@@ -109,7 +109,7 @@ data class Info(
 data class Character(
     @SerializedName("id")
     @Expose
-    val id: String,
+    val id: Int,
     @SerializedName("name")
     @Expose
     val name: String,

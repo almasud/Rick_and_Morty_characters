@@ -11,11 +11,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -57,13 +61,14 @@ import com.github.almasud.rick_and_morty.domain.model.Character
 import com.github.almasud.rick_and_morty.domain.model.dummyCharacters
 import com.github.almasud.rick_and_morty.ui.NavItem
 import com.github.almasud.rick_and_morty.ui.nav_graph.HomeNavGraph
+import com.github.almasud.rick_and_morty.ui.utils.CharacterStatus
 import com.github.almasud.rick_and_morty.ui.theme.RickAndMortyTheme
+import com.github.almasud.rick_and_morty.ui.utils.shimmer
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenContainer(navController: NavHostController = rememberNavController()) {
-
     Scaffold(
         topBar = {
             TopBar(
@@ -92,8 +97,8 @@ fun TopBar(navController: NavController) {
         title = {
             Text(
                 text = stringResource(id = R.string.app_name),
-                fontSize = 16.sp,
-                style = MaterialTheme.typography.bodySmall,
+                fontSize = 18.sp,
+                style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.W800,
                 color = Color.Black
             )
@@ -114,6 +119,7 @@ fun TopBar(navController: NavController) {
 @Composable
 fun CharactersScreen(homeVM: HomeVM) {
     val coroutineScope = rememberCoroutineScope()
+    val isLoading = false
 
     Box(
         modifier = Modifier
@@ -124,7 +130,7 @@ fun CharactersScreen(homeVM: HomeVM) {
         LazyColumn(
             content = {
                 items(items = dummyCharacters, itemContent = { character ->
-                    CharacterItem(character = character) {
+                    CharacterItem(character = character, isLoading = isLoading) {
                         coroutineScope.launch {
                             homeVM.showProfileScreen(characterId = it)
                         }
@@ -135,13 +141,17 @@ fun CharactersScreen(homeVM: HomeVM) {
 }
 
 @Composable
-fun CharacterItem(character: Character, onItemClickListener: ((String) -> Unit)? = null) {
+fun CharacterItem(
+    character: Character,
+    isLoading: Boolean = false,
+    onItemClickListener: ((Int) -> Unit)? = null
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(bottom = 8.dp)
-            .clickable {
+            .clickable(enabled = !isLoading) {
                 onItemClickListener?.invoke(character.id)
             },
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -169,11 +179,13 @@ fun CharacterItem(character: Character, onItemClickListener: ((String) -> Unit)?
                             )
                         )
                         .align(Alignment.CenterVertically)
+                        .shimmer(visible = isLoading)
                 ) {
                     AsyncImage(
                         model = character.image,
                         contentDescription = stringResource(id = R.string.avatar), // Provide a meaningful description
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize(),
                         contentScale = ContentScale.Crop,
                         placeholder = painterResource(id = R.drawable.profile_image),
                         error = painterResource(id = R.drawable.profile_image),
@@ -191,29 +203,14 @@ fun CharacterItem(character: Character, onItemClickListener: ((String) -> Unit)?
                         text = character.name,
                         fontWeight = FontWeight.W800,
                         fontSize = 16.sp,
-                        color = Color.Black
-                    )
-                    Row(
+                        color = Color.Black,
                         modifier = Modifier
-                            .padding(top = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_circle),
-                            contentDescription = stringResource(
-                                id = R.string.status
-                            ),
-                            modifier = Modifier.size(20.dp),
-                            tint = if (character.status.lowercase() == stringResource(id = R.string.alive).lowercase()) Color.Green.copy(
-                                alpha = 0.5f
-                            ) else Color.Red.copy(alpha = 0.5f)
-                        )
-                        Text(
-                            text = character.status,
-                            fontSize = 14.sp,
-                            color = Color.Black
-                        )
-                    }
+                            .wrapContentSize()
+                            .defaultMinSize(minWidth = 150.dp)
+                            .shimmer(visible = isLoading)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    CharacterStatus(character = character, isLoading = isLoading)
                 }
             }
         }

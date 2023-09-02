@@ -13,7 +13,7 @@ import com.github.almasud.rick_and_morty.ui.NavItem
 class HomeVM : ViewModel() {
     lateinit var navigateTo: (navRoute: String, singleTopMode: Boolean, restoreSaveState: Boolean) -> Unit
 
-    fun showProfileScreen(characterId: String) {
+    fun showProfileScreen(characterId: Int) {
         navigateTo(
             "${NavItem.Profile.route}/${App.Constant.Navigation.Argument.CHARACTER_ID}=$characterId",
             true, false

@@ -5,4 +5,9 @@
     <string name="avatar">Avatar</string>
     <string name="status">Status</string>
     <string name="alive">Alive</string>
+    <string name="about">About</string>
+    <string name="gender">Gender</string>
+    <string name="species">Species</string>
+    <string name="origin">Origin</string>
+    <string name="location">Location</string>
 </resources>
