@@ -132,7 +132,7 @@ fun CharacterItem(character: Character) {
             .wrapContentHeight()
             .padding(bottom = 8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(4.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(
@@ -142,7 +142,6 @@ fun CharacterItem(character: Character) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
             ) {
                 // Circular user image on the right side
                 Box(
