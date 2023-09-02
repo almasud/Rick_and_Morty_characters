@@ -67,6 +67,8 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
     // Gson
     implementation("com.google.code.gson:gson:2.10.1")
+    // Coil image
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

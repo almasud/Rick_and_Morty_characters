@@ -2,4 +2,7 @@
     <string name="app_name">Rick and Morty</string>
     <string name="home">Home</string>
     <string name="profile">Profile</string>
+    <string name="avatar">Avatar</string>
+    <string name="status">Status</string>
+    <string name="alive">Alive</string>
 </resources>

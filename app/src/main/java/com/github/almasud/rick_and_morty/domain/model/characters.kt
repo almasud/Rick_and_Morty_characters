@@ -25,7 +25,7 @@ val dummyCharacters = listOf(
     ),
     Character(
         name = "Mr. One",
-        image = "https://picsum.photos/id/2/200/300",
+        image = "https://picsum.photos/id/2df/200/300",
         status = "Alive",
         species = "Specie One",
         gender = "Male",
