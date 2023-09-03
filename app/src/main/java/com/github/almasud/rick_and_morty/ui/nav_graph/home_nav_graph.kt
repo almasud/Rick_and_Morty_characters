@@ -7,7 +7,7 @@
 package com.github.almasud.rick_and_morty.ui.nav_graph
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -28,7 +28,9 @@ fun HomeNavGraph(navController: NavHostController) {
         startDestination = NavItem.Home.route
     ) {
         composable(route = NavItem.Home.route) {
-            val homeVM = viewModel<HomeVM>()
+            // Creates a ViewModel from the current BackStackEntry
+            // Available in the androidx.hilt:hilt-navigation-compose artifact
+            val homeVM = hiltViewModel<HomeVM>()
 
             homeVM.navigateTo = { navRoute, singleTopMode, restoreSaveState ->
                 navController.navigate(navRoute) {

@@ -7,8 +7,10 @@
 package com.github.almasud.rick_and_morty
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
+@HiltAndroidApp
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
@@ -28,6 +30,10 @@ class App : Application() {
             object Argument {
                 const val CHARACTER_ID = "character"
             }
+        }
+
+        object Api {
+            const val BASE_URL = "https://rickandmortyapi.com/"
         }
     }
 }

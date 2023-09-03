@@ -5,13 +5,11 @@
  */
 
 package com.github.almasud.rick_and_morty.domain.model
-import android.os.Parcelable
 import com.google.gson.annotations.Expose
 
 import androidx.annotation.Keep
 
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 
 val dummyCharacters = listOf(
     Character(
@@ -76,35 +74,6 @@ val dummyCharacters = listOf(
     )
 )
 
-@Parcelize
-@Keep
-data class Characters(
-    @SerializedName("info")
-    @Expose
-    val info: Info,
-    @SerializedName("results")
-    @Expose
-    val characters: List<Character>
-) : Parcelable
-
-@Parcelize
-@Keep
-data class Info(
-    @SerializedName("count")
-    @Expose
-    val count: Int,
-    @SerializedName("next")
-    @Expose
-    val next: Int?,
-    @SerializedName("prev")
-    @Expose
-    val prev: Int?,
-    @SerializedName("pages")
-    @Expose
-    val pages: Int
-) : Parcelable
-
-@Parcelize
 @Keep
 data class Character(
     @SerializedName("id")
@@ -113,9 +82,6 @@ data class Character(
     @SerializedName("name")
     @Expose
     val name: String,
-    @SerializedName("image")
-    @Expose
-    val image: String,
     @SerializedName("status")
     @Expose
     val status: String,
@@ -130,21 +96,22 @@ data class Character(
     val origin: Origin,
     @SerializedName("location")
     @Expose
-    val location: Location
-) : Parcelable
+    val location: Location,
+    @SerializedName("image")
+    @Expose
+    val image: String
+)
 
-@Parcelize
 @Keep
 data class Origin(
     @SerializedName("name")
     @Expose
     val name: String
-) : Parcelable
+)
 
-@Parcelize
 @Keep
 data class Location(
     @SerializedName("name")
     @Expose
     val name: String
-) : Parcelable
+)
