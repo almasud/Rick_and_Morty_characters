@@ -22,7 +22,7 @@ interface CharacterDao {
     fun getCharacters(): PagingSource<Int, Character>
 
     @Query("SELECT * FROM characters WHERE id=:id")
-    fun getCharacterById(id: Int): PagingSource<Int, Character>
+    suspend fun getCharacterById(id: Long): Character
 
     @Query("DELETE FROM characters")
     suspend fun clearCharacters()

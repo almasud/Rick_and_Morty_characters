@@ -18,7 +18,7 @@ import com.github.almasud.rick_and_morty.domain.model.Character
     version = 1,
     exportSchema = false
 )
-abstract class CharacterDatabase : RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
 
     abstract fun characterDao(): CharacterDao
     abstract fun remoteKeysDao(): RemoteKeysDao
@@ -26,9 +26,9 @@ abstract class CharacterDatabase : RoomDatabase() {
     companion object {
 
         @Volatile
-        private var INSTANCE: CharacterDatabase? = null
+        private var INSTANCE: AppDatabase? = null
 
-        fun getInstance(context: Context): CharacterDatabase =
+        fun getInstance(context: Context): AppDatabase =
             INSTANCE ?: synchronized(this) {
                 INSTANCE
                     ?: buildDatabase(context).also { INSTANCE = it }
@@ -37,7 +37,7 @@ abstract class CharacterDatabase : RoomDatabase() {
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                CharacterDatabase::class.java, "${BuildConfig.APPLICATION_ID}.db"
+                AppDatabase::class.java, "${BuildConfig.APPLICATION_ID}.db"
             )
                 .build()
     }

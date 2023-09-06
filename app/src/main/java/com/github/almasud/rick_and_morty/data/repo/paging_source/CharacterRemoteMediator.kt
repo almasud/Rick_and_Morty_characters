@@ -12,7 +12,7 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.github.almasud.rick_and_morty.data.api.resposne.NetworkResult
-import com.github.almasud.rick_and_morty.data.db.CharacterDatabase
+import com.github.almasud.rick_and_morty.data.db.AppDatabase
 import com.github.almasud.rick_and_morty.data.db.RemoteKeys
 import com.github.almasud.rick_and_morty.domain.model.Character
 import com.github.almasud.rick_and_morty.domain.repo.CharacterRepo
@@ -25,7 +25,7 @@ private const val CHARACTER_STARTING_PAGE_INDEX = 1
 @OptIn(ExperimentalPagingApi::class)
 class CharacterRemoteMediator(
     private val characterRepo: CharacterRepo,
-    private val characterDatabase: CharacterDatabase
+    private val appDatabase: AppDatabase
 ) : RemoteMediator<Int, Character>() {
 
     override suspend fun initialize(): InitializeAction {
@@ -85,19 +85,19 @@ class CharacterRemoteMediator(
                 is NetworkResult.Success -> {
                     val characters = apiResponse.data.characters
                     val endOfPaginationReached = characters.isEmpty()
-                    characterDatabase.withTransaction {
+                    appDatabase.withTransaction {
                         // clear all tables in the database
                         if (loadType == LoadType.REFRESH) {
-                            characterDatabase.remoteKeysDao().clearRemoteKeys()
-                            characterDatabase.characterDao().clearCharacters()
+                            appDatabase.remoteKeysDao().clearRemoteKeys()
+                            appDatabase.characterDao().clearCharacters()
                         }
                         val prevKey = if (page == CHARACTER_STARTING_PAGE_INDEX) null else page - 1
                         val nextKey = if (endOfPaginationReached) null else page + 1
                         val keys = characters.map {
                             RemoteKeys(characterId = it.id, prevKey = prevKey, nextKey = nextKey)
                         }
-                        characterDatabase.remoteKeysDao().insertAll(keys)
-                        characterDatabase.characterDao().insertAll(characters)
+                        appDatabase.remoteKeysDao().insertAll(keys)
+                        appDatabase.characterDao().insertAll(characters)
                     }
                     MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
                 }
@@ -116,7 +116,7 @@ class CharacterRemoteMediator(
         return state.pages.lastOrNull() { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { character ->
                 // Get the remote keys of the last item retrieved
-                characterDatabase.remoteKeysDao().remoteKeysByCharacterId(character.id)
+                appDatabase.remoteKeysDao().remoteKeysByCharacterId(character.id)
             }
     }
 
@@ -126,7 +126,7 @@ class CharacterRemoteMediator(
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
             ?.let { character ->
                 // Get the remote keys of the first items retrieved
-                characterDatabase.remoteKeysDao().remoteKeysByCharacterId(character.id)
+                appDatabase.remoteKeysDao().remoteKeysByCharacterId(character.id)
             }
     }
 
@@ -139,12 +139,8 @@ class CharacterRemoteMediator(
         // Get the item closest to the anchor position
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { characterId ->
-                characterDatabase.remoteKeysDao().remoteKeysByCharacterId(characterId)
+                appDatabase.remoteKeysDao().remoteKeysByCharacterId(characterId)
             }
         }
-    }
-
-    companion object {
-        private const val TAG = "CharacterRemoteMediator"
     }
 }

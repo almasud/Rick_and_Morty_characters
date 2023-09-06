@@ -18,6 +18,7 @@ import com.github.almasud.rick_and_morty.ui.NavItem
 import com.github.almasud.rick_and_morty.ui.screens.home.CharactersScreen
 import com.github.almasud.rick_and_morty.ui.screens.home.HomeVM
 import com.github.almasud.rick_and_morty.ui.screens.profile.ProfileScreen
+import com.github.almasud.rick_and_morty.ui.screens.profile.ProfileVM
 import timber.log.Timber
 
 @Composable
@@ -64,9 +65,13 @@ fun HomeNavGraph(navController: NavHostController) {
                     type = NavType.StringType
                 })
         ) { navBackStackEntry ->
-            navBackStackEntry.arguments?.getString(App.Constant.Navigation.Argument.CHARACTER_ID)?.let {
-                ProfileScreen(characterId = it.toLong())
-            }
+            navBackStackEntry.arguments?.getString(App.Constant.Navigation.Argument.CHARACTER_ID)
+                ?.let {
+                    val viewModel = hiltViewModel<ProfileVM>()
+
+                    viewModel.getCharacterById(it.toLong())
+                    ProfileScreen(viewModel = viewModel)
+                }
         }
     }
 }

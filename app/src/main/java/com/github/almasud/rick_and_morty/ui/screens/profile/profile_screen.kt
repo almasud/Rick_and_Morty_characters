@@ -42,18 +42,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.github.almasud.rick_and_morty.R
 import com.github.almasud.rick_and_morty.domain.model.Character
-import com.github.almasud.rick_and_morty.domain.model.dummyCharacter
-import com.github.almasud.rick_and_morty.ui.utils.CharacterStatus
 import com.github.almasud.rick_and_morty.ui.theme.RickAndMortyTheme
+import com.github.almasud.rick_and_morty.ui.utils.CharacterStatus
 import com.github.almasud.rick_and_morty.ui.utils.shimmer
 
 @Composable
-fun ProfileScreen(characterId: Long) {
-    val character = dummyCharacter
-    val isLoading = false
+fun ProfileScreen(viewModel: ProfileVM) {
+    val characterState = viewModel.character
 
     Column(
         modifier = Modifier
@@ -76,10 +75,10 @@ fun ProfileScreen(characterId: Long) {
                     )
                 )
                 .align(Alignment.CenterHorizontally)
-                .shimmer(visible = isLoading)
+                .shimmer(visible = characterState.value == null)
         ) {
             AsyncImage(
-                model = character?.image,
+                model = characterState.value?.image,
                 contentDescription = stringResource(id = R.string.avatar), // Provide a meaningful description
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
@@ -103,12 +102,12 @@ fun ProfileScreen(characterId: Long) {
                     .padding(start = 16.dp, end = 16.dp, top = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                character?.let {
-                    NameAndStatus(character = it, isLoading = isLoading)
+                characterState.value?.let {
+                    NameAndStatus(character = it, isLoading = characterState.value == null)
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                character?.let {
-                    About(character = it, isLoading = isLoading)
+                characterState.value?.let {
+                    About(character = it, isLoading = characterState.value == null)
                 }
             }
         }
@@ -223,6 +222,6 @@ private fun AboutItem(
 @Composable
 fun ProfileScreenPreview() {
     RickAndMortyTheme {
-        ProfileScreen(characterId = 1)
+        ProfileScreen(viewModel())
     }
 }

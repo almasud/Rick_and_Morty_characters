@@ -15,7 +15,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.github.almasud.rick_and_morty.App
-import com.github.almasud.rick_and_morty.data.db.CharacterDatabase
+import com.github.almasud.rick_and_morty.data.db.AppDatabase
 import com.github.almasud.rick_and_morty.data.repo.paging_source.CharacterRemoteMediator
 import com.github.almasud.rick_and_morty.domain.model.Character
 import com.github.almasud.rick_and_morty.domain.repo.CharacterRepo
@@ -33,7 +33,7 @@ class HomeVM @Inject constructor(
 ) : ViewModel() {
     lateinit var navigateTo: (navRoute: String, singleTopMode: Boolean, restoreSaveState: Boolean) -> Unit
     lateinit var characters: Flow<PagingData<Character>>
-    private var database: CharacterDatabase = CharacterDatabase.getInstance(app)
+    private var database: AppDatabase = AppDatabase.getInstance(app)
 
     fun showProfileScreen(characterId: Long) {
         navigateTo(
@@ -49,22 +49,11 @@ class HomeVM @Inject constructor(
             config = PagingConfig(pageSize = NETWORK_PAGE_SIZE, enablePlaceholders = false),
             remoteMediator = CharacterRemoteMediator(
                 characterRepo,
-                CharacterDatabase.getInstance(app)
+                AppDatabase.getInstance(app)
             ),
             pagingSourceFactory = { database.characterDao().getCharacters() }
         ).flow.cachedIn(viewModelScope)
     }
-
-//    suspend fun loadCharacters() {
-//        Timber.d("loadCharacters: is called")
-//        when(val response = characterRepo.getCharacters(page = 1)) {
-//            is NetworkResult.Success -> {
-//                Timber.d("response: ${response.data.characters}")
-//            }
-//            is NetworkResult.Error -> Timber.e("loadCharacters: error: ${response.message}")
-//            is NetworkResult.Exception -> Timber.e(response.e, "loadCharacters: exception: ${response.e.message}")
-//        }
-//    }
 
     init {
         viewModelScope.launch {
