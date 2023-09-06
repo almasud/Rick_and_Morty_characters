@@ -5,80 +5,34 @@
  */
 
 package com.github.almasud.rick_and_morty.domain.model
+
 import com.google.gson.annotations.Expose
 
 import androidx.annotation.Keep
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 import com.google.gson.annotations.SerializedName
 
-val dummyCharacters = listOf(
-    Character(
-        id = 1,
-        name = "Mr. One",
-        image = "https://picsum.photos/id/1/200/300",
-        status = "Alive",
-        species = "Specie One",
-        gender = "Male",
-        origin = Origin(name = "Origin One"),
-        location = Location(name = "Location One")
-    ),
-    Character(
-        id = 2,
-        name = "Mr. One",
-        image = "https://picsum.photos/id/2df/200/300",
-        status = "Alive",
-        species = "Specie One",
-        gender = "Male",
-        origin = Origin(name = "Origin One"),
-        location = Location(name = "Location One")
-    ),
-    Character(
-        id = 3,
-        name = "Mr. Two",
-        image = "https://picsum.photos/id/3/200/300",
-        status = "Dead",
-        species = "Specie Two",
-        gender = "Male",
-        origin = Origin(name = "Origin Two"),
-        location = Location(name = "Location Two")
-    ),
-    Character(
-        id = 4,
-        name = "Mrs. One",
-        image = "https://picsum.photos/id/4/200/300",
-        status = "Alive",
-        species = "Specie One",
-        gender = "Female",
-        origin = Origin(name = "Origin One"),
-        location = Location(name = "Location One")
-    ),
-    Character(
-        id = 5,
-        name = "Mr. Three",
-        image = "https://picsum.photos/id/1/200/300",
-        status = "Alive",
-        species = "Specie Three",
-        gender = "Male",
-        origin = Origin(name = "Origin Three"),
-        location = Location(name = "Location Three")
-    ),
-    Character(
-        id = 6,
-        name = "Mrs. Two",
-        image = "https://picsum.photos/id/5/200/300",
-        status = "Dead",
-        species = "Specie Two",
-        gender = "Female",
-        origin = Origin(name = "Origin Two"),
-        location = Location(name = "Location Two")
-    )
+val dummyCharacter = Character(
+    id = 1,
+    name = "Mr. One",
+    image = "https://picsum.photos/id/1/200/300",
+    status = "Alive",
+    species = "Specie One",
+    gender = "Male",
+    origin = Origin(originName = "Origin One"),
+    location = Location(locationName = "Location One")
 )
 
 @Keep
+@Entity(tableName = "characters")
 data class Character(
+    @PrimaryKey
     @SerializedName("id")
     @Expose
-    val id: Int,
+    val id: Long,
     @SerializedName("name")
     @Expose
     val name: String,
@@ -93,9 +47,11 @@ data class Character(
     val gender: String,
     @SerializedName("origin")
     @Expose
+    @Embedded
     val origin: Origin,
     @SerializedName("location")
     @Expose
+    @Embedded
     val location: Location,
     @SerializedName("image")
     @Expose
@@ -106,12 +62,12 @@ data class Character(
 data class Origin(
     @SerializedName("name")
     @Expose
-    val name: String
+    val originName: String
 )
 
 @Keep
 data class Location(
     @SerializedName("name")
     @Expose
-    val name: String
+    val locationName: String
 )

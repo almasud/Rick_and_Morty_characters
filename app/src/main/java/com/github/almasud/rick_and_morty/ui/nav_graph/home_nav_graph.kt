@@ -65,7 +65,7 @@ fun HomeNavGraph(navController: NavHostController) {
                 })
         ) { navBackStackEntry ->
             navBackStackEntry.arguments?.getString(App.Constant.Navigation.Argument.CHARACTER_ID)?.let {
-                ProfileScreen(characterId = it.toInt())
+                ProfileScreen(characterId = it.toLong())
             }
         }
     }

@@ -45,14 +45,14 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.github.almasud.rick_and_morty.R
 import com.github.almasud.rick_and_morty.domain.model.Character
-import com.github.almasud.rick_and_morty.domain.model.dummyCharacters
+import com.github.almasud.rick_and_morty.domain.model.dummyCharacter
 import com.github.almasud.rick_and_morty.ui.utils.CharacterStatus
 import com.github.almasud.rick_and_morty.ui.theme.RickAndMortyTheme
 import com.github.almasud.rick_and_morty.ui.utils.shimmer
 
 @Composable
-fun ProfileScreen(characterId: Int) {
-    val character = dummyCharacters.find { it.id == characterId }
+fun ProfileScreen(characterId: Long) {
+    val character = dummyCharacter
     val isLoading = false
 
     Column(
@@ -177,9 +177,9 @@ private fun About(character: Character, isLoading: Boolean = false) {
             Spacer(modifier = Modifier.height(8.dp))
             AboutItem(label = stringResource(id = R.string.species), character.species, isLoading)
             Spacer(modifier = Modifier.height(8.dp))
-            AboutItem(label = stringResource(id = R.string.origin), character.origin.name, isLoading)
+            AboutItem(label = stringResource(id = R.string.origin), character.origin.originName, isLoading)
             Spacer(modifier = Modifier.height(8.dp))
-            AboutItem(label = stringResource(id = R.string.location), character.location.name, isLoading)
+            AboutItem(label = stringResource(id = R.string.location), character.location.locationName, isLoading)
         }
     }
 }

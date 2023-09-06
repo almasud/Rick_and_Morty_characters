@@ -10,4 +10,6 @@
     <string name="species">Species</string>
     <string name="origin">Origin</string>
     <string name="location">Location</string>
+    <string name="no_data_found">No data found!</string>
+    <string name="failed_to_load_characters_data">Faild to load characters data!</string>
 </resources>

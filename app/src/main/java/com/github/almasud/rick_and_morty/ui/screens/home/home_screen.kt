@@ -6,8 +6,10 @@
 
 package com.github.almasud.rick_and_morty.ui.screens.home
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +23,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -37,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,9 +47,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,16 +59,20 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemsIndexed
 import coil.compose.AsyncImage
 import com.github.almasud.rick_and_morty.R
 import com.github.almasud.rick_and_morty.domain.model.Character
-import com.github.almasud.rick_and_morty.domain.model.dummyCharacters
+import com.github.almasud.rick_and_morty.domain.model.dummyCharacter
 import com.github.almasud.rick_and_morty.ui.NavItem
 import com.github.almasud.rick_and_morty.ui.nav_graph.HomeNavGraph
-import com.github.almasud.rick_and_morty.ui.utils.CharacterStatus
 import com.github.almasud.rick_and_morty.ui.theme.RickAndMortyTheme
+import com.github.almasud.rick_and_morty.ui.utils.CharacterStatus
 import com.github.almasud.rick_and_morty.ui.utils.shimmer
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -119,24 +127,76 @@ fun TopBar(navController: NavController) {
 @Composable
 fun CharactersScreen(homeVM: HomeVM) {
     val coroutineScope = rememberCoroutineScope()
-    val isLoading = false
+    val characters = homeVM.characters.collectAsLazyPagingItems()
+    val context = LocalContext.current
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.LightGray.copy(alpha = 0.3f))
-            .padding(8.dp)
+            .padding(8.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LazyColumn(
-            content = {
-                items(items = dummyCharacters, itemContent = { character ->
-                    CharacterItem(character = character, isLoading = isLoading) {
-                        coroutineScope.launch {
-                            homeVM.showProfileScreen(characterId = it)
+        if ((characters.itemSnapshotList.isEmpty())
+            && characters.loadState.refresh !is LoadState.Loading
+        ) {
+            Timber.i("CharacterScreen: characters is empty!")
+            Text(
+                text = stringResource(id = R.string.no_data_found),
+                color = Color.LightGray,
+                textAlign = TextAlign.Center,
+            )
+        } else {
+            Timber.i("CharacterScreen: characters is not empty!")
+            LazyColumn {
+                itemsIndexed(characters) { _, character ->
+                    character?.let {
+                        CharacterItem(character = it) {
+                            coroutineScope.launch {
+                                homeVM.showProfileScreen(characterId = it)
+                            }
                         }
                     }
-                })
-            })
+                }
+            }
+        }
+        characters.apply {
+            when {
+                loadState.refresh is LoadState.Loading
+                        || loadState.prepend is LoadState.Loading
+                        || loadState.append is LoadState.Loading -> {
+                    repeat(10) {
+                        Timber.i("CharacterScreen: is loading...")
+                        CharacterItem(character = dummyCharacter, isLoading = true)
+                    }
+                }
+
+                loadState.refresh is LoadState.Error
+                        || loadState.prepend is LoadState.Error
+                        || loadState.append is LoadState.Error -> {
+                    val errorState = if (loadState.refresh is LoadState.Error)
+                        (loadState.refresh as LoadState.Error)
+                    else if (loadState.prepend is LoadState.Error)
+                        (loadState.prepend as LoadState.Error)
+                    else
+                        (loadState.append as LoadState.Error)
+
+                    Timber.e(
+                        errorState.error,
+                        "CharacterScreen: ${errorState.error.message}"
+                    )
+
+                    LaunchedEffect(key1 = errorState) {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.failed_to_load_characters_data),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -144,7 +204,7 @@ fun CharactersScreen(homeVM: HomeVM) {
 fun CharacterItem(
     character: Character,
     isLoading: Boolean = false,
-    onItemClickListener: ((Int) -> Unit)? = null
+    onItemClickListener: ((Long) -> Unit)? = null
 ) {
     Card(
         modifier = Modifier

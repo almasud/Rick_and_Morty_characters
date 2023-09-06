@@ -57,6 +57,8 @@ dependencies {
     val accompanistVersion = "0.28.0"
     val retrofitVersion = "2.9.0"
     val hiltVersion = "2.45"
+    val roomVersion = "2.4.2"
+    val pagingVersion = "3.1.0"
 
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
@@ -84,6 +86,18 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
     // Navigation compose integration
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    // Room
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    // Paging 3 Integration
+    implementation("androidx.room:room-paging:$roomVersion")
+    // Paging 3
+    implementation("androidx.paging:paging-runtime-ktx:$pagingVersion")
+    // Paging3 - Jetpack Compose integration
+    implementation("androidx.paging:paging-compose:1.0.0-alpha18")
+//    implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    kapt ("androidx.room:room-compiler:$roomVersion")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
