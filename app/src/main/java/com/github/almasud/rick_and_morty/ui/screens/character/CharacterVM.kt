@@ -4,7 +4,7 @@
  * Created on: 2/9/2023
  */
 
-package com.github.almasud.rick_and_morty.ui.screens.home
+package com.github.almasud.rick_and_morty.ui.screens.character
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
@@ -27,7 +27,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeVM @Inject constructor(
+class CharacterVM @Inject constructor(
     private val characterRepo: CharacterRepo,
     private val app: Application
 ) : ViewModel() {
@@ -35,9 +35,9 @@ class HomeVM @Inject constructor(
     lateinit var characters: Flow<PagingData<Character>>
     private var database: AppDatabase = AppDatabase.getInstance(app)
 
-    fun showProfileScreen(characterId: Long) {
+    fun showProfileScreen(character: Character) {
         navigateTo(
-            "${NavItem.Profile.route}/${App.Constant.Navigation.Argument.CHARACTER_ID}=$characterId",
+            "${NavItem.CharacterDetails.route}/${App.Constant.Navigation.Argument.CHARACTER_ID}=${character.id}&${App.Constant.Navigation.Argument.CHARACTER_NAME}=${character.name}",
             true, false
         )
     }

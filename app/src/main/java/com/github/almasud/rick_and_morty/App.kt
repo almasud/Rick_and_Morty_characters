@@ -28,7 +28,8 @@ class App : Application() {
             }
 
             object Argument {
-                const val CHARACTER_ID = "character"
+                const val CHARACTER_ID = "character_id"
+                const val CHARACTER_NAME = "character_name"
             }
         }
 

@@ -9,8 +9,7 @@ package com.github.almasud.rick_and_morty.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.navigation.compose.rememberNavController
-import com.github.almasud.rick_and_morty.ui.screens.home.HomeScreenContainer
+import com.github.almasud.rick_and_morty.ui.nav_graph.HomeNavGraph
 import com.github.almasud.rick_and_morty.ui.theme.RickAndMortyTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,7 +19,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RickAndMortyTheme {
-               HomeScreenContainer(navController = rememberNavController())
+               HomeNavGraph()
             }
         }
     }

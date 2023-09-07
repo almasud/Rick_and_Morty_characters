@@ -4,7 +4,7 @@
  * Created on: 7/9/2023
  */
 
-package com.github.almasud.rick_and_morty.ui.screens.profile
+package com.github.almasud.rick_and_morty.ui.screens.character_details
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileVM @Inject constructor(
+class CharacterDetailsVM @Inject constructor(
     private val characterRepo: CharacterRepo
 ) : ViewModel() {
     val character: MutableState<Character?> = mutableStateOf(null)

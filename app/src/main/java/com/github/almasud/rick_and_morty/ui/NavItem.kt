@@ -13,6 +13,6 @@ sealed class NavItem(
     @StringRes val title: Int,
     val route: String
 ) {
-    object Home: NavItem(R.string.home, "home")
-    object Profile: NavItem(R.string.profile, "profile")
+    object Character : NavItem(R.string.character, "character")
+    object CharacterDetails : NavItem(R.string.character_details, "character_details")
 }

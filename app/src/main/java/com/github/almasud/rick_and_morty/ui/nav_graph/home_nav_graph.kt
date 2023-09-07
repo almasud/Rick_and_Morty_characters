@@ -7,33 +7,36 @@
 package com.github.almasud.rick_and_morty.ui.nav_graph
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.github.almasud.rick_and_morty.App
+import com.github.almasud.rick_and_morty.R
 import com.github.almasud.rick_and_morty.ui.NavItem
-import com.github.almasud.rick_and_morty.ui.screens.home.CharactersScreen
-import com.github.almasud.rick_and_morty.ui.screens.home.HomeVM
-import com.github.almasud.rick_and_morty.ui.screens.profile.ProfileScreen
-import com.github.almasud.rick_and_morty.ui.screens.profile.ProfileVM
+import com.github.almasud.rick_and_morty.ui.screens.character.CharacterScreenContainer
+import com.github.almasud.rick_and_morty.ui.screens.character.CharacterVM
+import com.github.almasud.rick_and_morty.ui.screens.character_details.CharacterDetailsScreenContainer
+import com.github.almasud.rick_and_morty.ui.screens.character_details.CharacterDetailsVM
 import timber.log.Timber
 
 @Composable
-fun HomeNavGraph(navController: NavHostController) {
+fun HomeNavGraph(navController: NavHostController = rememberNavController()) {
     NavHost(
         navController = navController,
         route = App.Constant.Navigation.Graph.HOME_GRAPH,
-        startDestination = NavItem.Home.route
+        startDestination = NavItem.Character.route
     ) {
-        composable(route = NavItem.Home.route) {
+        composable(route = NavItem.Character.route) {
             // Creates a ViewModel from the current BackStackEntry
             // Available in the androidx.hilt:hilt-navigation-compose artifact
-            val homeVM = hiltViewModel<HomeVM>()
+            val characterVM = hiltViewModel<CharacterVM>()
 
-            homeVM.navigateTo = { navRoute, singleTopMode, restoreSaveState ->
+            characterVM.navigateTo = { navRoute, singleTopMode, restoreSaveState ->
                 navController.navigate(navRoute) {
                     Timber.i("HomeNavGraph: navRoute: $navRoute")
                     // Pop up to the start destination of the graph to
@@ -55,23 +58,32 @@ fun HomeNavGraph(navController: NavHostController) {
                 }
             }
 
-            CharactersScreen(homeVM = homeVM)
+            CharacterScreenContainer(navController = navController, viewModel = characterVM)
         }
 
         composable(
-            route = "${NavItem.Profile.route}/${App.Constant.Navigation.Argument.CHARACTER_ID}={${App.Constant.Navigation.Argument.CHARACTER_ID}}",
+            route = "${NavItem.CharacterDetails.route}/${App.Constant.Navigation.Argument.CHARACTER_ID}={${App.Constant.Navigation.Argument.CHARACTER_ID}}&${App.Constant.Navigation.Argument.CHARACTER_NAME}={${App.Constant.Navigation.Argument.CHARACTER_NAME}}",
             arguments = listOf(
                 navArgument(App.Constant.Navigation.Argument.CHARACTER_ID) {
                     type = NavType.StringType
                 })
         ) { navBackStackEntry ->
-            navBackStackEntry.arguments?.getString(App.Constant.Navigation.Argument.CHARACTER_ID)
-                ?.let {
-                    val viewModel = hiltViewModel<ProfileVM>()
+            val characterId =
+                navBackStackEntry.arguments?.getString(App.Constant.Navigation.Argument.CHARACTER_ID)
+            val characterName =
+                navBackStackEntry.arguments?.getString(App.Constant.Navigation.Argument.CHARACTER_NAME)
 
-                    viewModel.getCharacterById(it.toLong())
-                    ProfileScreen(viewModel = viewModel)
-                }
+            characterId?.let { id ->
+                val viewModel = hiltViewModel<CharacterDetailsVM>()
+                viewModel.getCharacterById(id.toLong())
+
+                CharacterDetailsScreenContainer(
+                    navController = navController, viewModel = viewModel, appTitle = characterName
+                        ?: stringResource(
+                            id = R.string.app_name
+                        )
+                )
+            }
         }
     }
 }

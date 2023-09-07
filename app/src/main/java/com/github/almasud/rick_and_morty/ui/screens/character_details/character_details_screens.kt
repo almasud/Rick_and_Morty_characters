@@ -4,7 +4,7 @@
  * Created on: 2/9/2023
  */
 
-package com.github.almasud.rick_and_morty.ui.screens.profile
+package com.github.almasud.rick_and_morty.ui.screens.character_details
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -43,15 +43,28 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.github.almasud.rick_and_morty.R
 import com.github.almasud.rick_and_morty.domain.model.Character
+import com.github.almasud.rick_and_morty.ui.screens.AppScaffold
 import com.github.almasud.rick_and_morty.ui.theme.RickAndMortyTheme
 import com.github.almasud.rick_and_morty.ui.utils.CharacterStatus
 import com.github.almasud.rick_and_morty.ui.utils.shimmer
 
 @Composable
-fun ProfileScreen(viewModel: ProfileVM) {
+fun CharacterDetailsScreenContainer(
+    navController: NavController,
+    viewModel: CharacterDetailsVM,
+    appTitle: String
+) {
+    AppScaffold(navController = navController, appBarTitle = appTitle) {
+        CharacterDetailsScreen(viewModel = viewModel)
+    }
+}
+
+@Composable
+fun CharacterDetailsScreen(viewModel: CharacterDetailsVM) {
     val characterState = viewModel.character
 
     Column(
@@ -146,6 +159,7 @@ private fun NameAndStatus(character: Character, isLoading: Boolean = false) {
         }
     }
 }
+
 @Composable
 private fun About(character: Character, isLoading: Boolean = false) {
     Card(
@@ -176,9 +190,17 @@ private fun About(character: Character, isLoading: Boolean = false) {
             Spacer(modifier = Modifier.height(8.dp))
             AboutItem(label = stringResource(id = R.string.species), character.species, isLoading)
             Spacer(modifier = Modifier.height(8.dp))
-            AboutItem(label = stringResource(id = R.string.origin), character.origin.originName, isLoading)
+            AboutItem(
+                label = stringResource(id = R.string.origin),
+                character.origin.originName,
+                isLoading
+            )
             Spacer(modifier = Modifier.height(8.dp))
-            AboutItem(label = stringResource(id = R.string.location), character.location.locationName, isLoading)
+            AboutItem(
+                label = stringResource(id = R.string.location),
+                character.location.locationName,
+                isLoading
+            )
         }
     }
 }
@@ -222,6 +244,6 @@ private fun AboutItem(
 @Composable
 fun ProfileScreenPreview() {
     RickAndMortyTheme {
-        ProfileScreen(viewModel())
+        CharacterDetailsScreen(viewModel())
     }
 }
