@@ -6,7 +6,6 @@
 
 package com.github.almasud.rick_and_morty.ui.screens.character
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,9 +26,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,19 +63,24 @@ import com.github.almasud.rick_and_morty.ui.utils.CharacterStatus
 import com.github.almasud.rick_and_morty.ui.utils.shimmer
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.net.UnknownHostException
 
 @Composable
 fun CharacterScreenContainer(navController: NavController, viewModel: CharacterVM) {
+    val snackbarHostState = remember {
+        SnackbarHostState()
+    }
     AppScaffold(
         navController = navController,
-        appBarTitle = stringResource(id = R.string.app_name)
+        appBarTitle = stringResource(id = R.string.app_name),
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) {
-        CharactersScreen(viewModel = viewModel)
+        CharactersScreen(viewModel = viewModel, snackbarHostState = snackbarHostState)
     }
 }
 
 @Composable
-fun CharactersScreen(viewModel: CharacterVM) {
+fun CharactersScreen(viewModel: CharacterVM, snackbarHostState: SnackbarHostState? = null) {
     val coroutineScope = rememberCoroutineScope()
     val characters = viewModel.characters.collectAsLazyPagingItems()
     val context = LocalContext.current
@@ -136,11 +143,15 @@ fun CharactersScreen(viewModel: CharacterVM) {
                     )
 
                     LaunchedEffect(key1 = errorState) {
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.failed_to_load_characters_data),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        if (errorState.error is UnknownHostException) {
+                            snackbarHostState?.showSnackbar(
+                                context.getString(R.string.could_not_connect_to_the_server)
+                            )
+                        } else {
+                            snackbarHostState?.showSnackbar(
+                                context.getString(R.string.failed_to_load_characters_data)
+                            )
+                        }
                     }
                 }
             }

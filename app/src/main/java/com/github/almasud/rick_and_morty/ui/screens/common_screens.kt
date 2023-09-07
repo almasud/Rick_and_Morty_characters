@@ -32,6 +32,7 @@ import com.github.almasud.rick_and_morty.ui.NavItem
 fun AppScaffold(
     navController: NavController,
     appBarTitle: String,
+    snackbarHost: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
     Scaffold(
@@ -41,6 +42,7 @@ fun AppScaffold(
                 toolbarTitle = appBarTitle
             )
         },
+        snackbarHost = { if (snackbarHost != null) snackbarHost() },
         content = { paddingValues ->
             Column(
                 modifier = Modifier.padding(paddingValues)
