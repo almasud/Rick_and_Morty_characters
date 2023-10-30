@@ -96,7 +96,6 @@ dependencies {
     implementation("androidx.paging:paging-runtime-ktx:$pagingVersion")
     // Paging3 - Jetpack Compose integration
     implementation("androidx.paging:paging-compose:1.0.0-alpha18")
-//    implementation("androidx.legacy:legacy-support-v4:1.0.0")
     kapt ("androidx.room:room-compiler:$roomVersion")
 
     testImplementation("junit:junit:4.13.2")
@@ -106,6 +105,7 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    androidTestImplementation ("com.google.truth:truth:1.1.4")
 }
 
 // Allow references to generated code

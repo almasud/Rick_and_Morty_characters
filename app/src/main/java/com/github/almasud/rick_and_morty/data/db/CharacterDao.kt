@@ -16,7 +16,10 @@ import com.github.almasud.rick_and_morty.domain.model.Character
 @Dao
 interface CharacterDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(repos: List<Character>)
+    suspend fun insertAll(characters: List<Character>)
+
+    @Insert
+    suspend fun insert(character: Character)
 
     @Query("SELECT * FROM characters")
     fun getCharacters(): PagingSource<Int, Character>
