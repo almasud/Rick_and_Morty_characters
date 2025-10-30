@@ -9,10 +9,10 @@ package com.github.almasud.rick_and_morty.data.db
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "remote_keys")
-data class RemoteKeys(
+@Entity(tableName = "character_remote_keys")
+data class CharacterRemoteKeys(
     @PrimaryKey
-    val characterId: Long,
+    val id: Long,
     val prevKey: Int?,
     val nextKey: Int?
 )

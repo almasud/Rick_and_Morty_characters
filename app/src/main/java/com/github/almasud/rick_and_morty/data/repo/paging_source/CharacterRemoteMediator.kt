@@ -13,7 +13,7 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.github.almasud.rick_and_morty.data.api.resposne.NetworkResult
 import com.github.almasud.rick_and_morty.data.db.AppDatabase
-import com.github.almasud.rick_and_morty.data.db.RemoteKeys
+import com.github.almasud.rick_and_morty.data.db.CharacterRemoteKeys
 import com.github.almasud.rick_and_morty.domain.model.Character
 import com.github.almasud.rick_and_morty.domain.repo.CharacterRepo
 import retrofit2.HttpException
@@ -88,15 +88,15 @@ class CharacterRemoteMediator(
                     appDatabase.withTransaction {
                         // clear all tables in the database
                         if (loadType == LoadType.REFRESH) {
-                            appDatabase.remoteKeysDao().clearRemoteKeys()
+                            appDatabase.characterRemoteKeysDao().clearRemoteKeys()
                             appDatabase.characterDao().clearCharacters()
                         }
                         val prevKey = if (page == CHARACTER_STARTING_PAGE_INDEX) null else page - 1
                         val nextKey = if (endOfPaginationReached) null else page + 1
                         val keys = characters.map {
-                            RemoteKeys(characterId = it.id, prevKey = prevKey, nextKey = nextKey)
+                            CharacterRemoteKeys(id = it.id, prevKey = prevKey, nextKey = nextKey)
                         }
-                        appDatabase.remoteKeysDao().insertAll(keys)
+                        appDatabase.characterRemoteKeysDao().insertAll(keys)
                         appDatabase.characterDao().insertAll(characters)
                     }
                     MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
@@ -110,36 +110,36 @@ class CharacterRemoteMediator(
         }
     }
 
-    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, Character>): RemoteKeys? {
+    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, Character>): CharacterRemoteKeys? {
         // Get the last page that was retrieved, that contained items.
         // From that last page, get the last item
         return state.pages.lastOrNull() { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { character ->
                 // Get the remote keys of the last item retrieved
-                appDatabase.remoteKeysDao().remoteKeysByCharacterId(character.id)
+                appDatabase.characterRemoteKeysDao().remoteKeysById(character.id)
             }
     }
 
-    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, Character>): RemoteKeys? {
+    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, Character>): CharacterRemoteKeys? {
         // Get the first page that was retrieved, that contained items.
         // From that first page, get the first item
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
             ?.let { character ->
                 // Get the remote keys of the first items retrieved
-                appDatabase.remoteKeysDao().remoteKeysByCharacterId(character.id)
+                appDatabase.characterRemoteKeysDao().remoteKeysById(character.id)
             }
     }
 
     private suspend fun getRemoteKeyClosestToCurrentPosition(
         state: PagingState<Int, Character>
-    ): RemoteKeys? {
+    ): CharacterRemoteKeys? {
         Timber.d("getRemoteKeyClosestToCurrentPosition: is called")
 
         // The paging library is trying to load data after the anchor position
         // Get the item closest to the anchor position
         return state.anchorPosition?.let { position ->
-            state.closestItemToPosition(position)?.id?.let { characterId ->
-                appDatabase.remoteKeysDao().remoteKeysByCharacterId(characterId)
+            state.closestItemToPosition(position)?.id?.let { id ->
+                appDatabase.characterRemoteKeysDao().remoteKeysById(id)
             }
         }
     }

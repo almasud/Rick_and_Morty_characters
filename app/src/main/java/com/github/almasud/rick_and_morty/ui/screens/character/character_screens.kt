@@ -73,7 +73,7 @@ fun CharacterScreenContainer(navController: NavController, viewModel: CharacterV
     AppScaffold(
         navController = navController,
         appBarTitle = stringResource(id = R.string.app_name),
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackBarHost = { SnackbarHost(snackbarHostState) }
     ) {
         CharactersScreen(viewModel = viewModel, snackbarHostState = snackbarHostState)
     }
@@ -185,7 +185,7 @@ fun CharacterItem(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                // Circular user image on the right side
+                // Circular user image on the left side
                 Box(
                     modifier = Modifier
                         .size(80.dp)
