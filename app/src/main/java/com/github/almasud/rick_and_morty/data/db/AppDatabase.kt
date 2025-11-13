@@ -14,14 +14,14 @@ import com.github.almasud.rick_and_morty.BuildConfig
 import com.github.almasud.rick_and_morty.domain.model.Character
 
 @Database(
-    entities = [Character::class, RemoteKeys::class],
+    entities = [Character::class, CharacterRemoteKeys::class],
     version = 1,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun characterDao(): CharacterDao
-    abstract fun remoteKeysDao(): RemoteKeysDao
+    abstract fun characterRemoteKeysDao(): CharacterRemoteKeysDao
 
     companion object {
 
