@@ -1,16 +1,27 @@
 <resources>
     <string name="app_name">Rick and Morty</string>
+    <string name="request_timeout">Request Timeout</string>
+    <string name="too_many_requests">Too many requests</string>
+    <string name="no_connection">No connection</string>
+    <string name="data_parse_error">Data parse error</string>
+    <string name="server_error">An error fething from server</string>
+    <string name="unknown_error">An unknown error</string>
+    <string name="disk_full_error">Disk full error</string>
     <string name="character">Character</string>
     <string name="character_details">Character Details</string>
+    <string name="characters_title">Explore the multiverse</string>
+    <string name="characters_subtitle">Tap any character card to learn their story.</string>
+    <string name="retry">Retry</string>
+    <string name="something_went_wrong">Something went wrong!</string>
+    <string name="no_data_found_yet">No data found yet!</string>
     <string name="avatar">Avatar</string>
-    <string name="status">Status</string>
-    <string name="alive">Alive</string>
-    <string name="about">About</string>
-    <string name="gender">Gender</string>
-    <string name="species">Species</string>
-    <string name="origin">Origin</string>
-    <string name="location">Location</string>
-    <string name="no_data_found">No data found!</string>
-    <string name="failed_to_load_characters_data">Faild to load characters data!</string>
-    <string name="could_not_connect_to_the_server">Couldn\'t connect to the server! Please check your internet connection and try again.</string>
+    <string name="error_to_load_data">Error to laod data!</string>
+    <string name="character_not_found">Character not found</string>
+    <string name="character_id_label">ID #%1$d</string>
+    <string name="character_gender_label">Gender</string>
+    <string name="character_species_label">Species</string>
+    <string name="character_origin_label">Origin</string>
+    <string name="character_location_label">Last Known Location</string>
+    <string name="character_created_label">Created</string>
+    <string name="back_to_list">Back to list</string>
 </resources>
