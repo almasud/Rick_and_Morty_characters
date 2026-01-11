@@ -1,5 +1,7 @@
 package com.github.almasud.rickandmorty.character_details.presentation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +25,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -199,22 +201,24 @@ private fun CharacterInfoCard(character: Character) {
                 label = stringResource(id = R.string.character_species_label),
                 value = character.species
             )
-            Divider()
+            HorizontalDivider()
             CharacterMetaRow(
                 icon = Icons.Outlined.Place,
                 label = stringResource(id = R.string.character_location_label),
                 value = character.location.locationName
             )
-            Divider()
-            CharacterMetaRow(
-                icon = Icons.Outlined.CalendarMonth,
-                label = stringResource(id = R.string.character_created_label),
-                value = formatDate(character.created)
-            )
+            HorizontalDivider()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                CharacterMetaRow(
+                    icon = Icons.Outlined.CalendarMonth,
+                    label = stringResource(id = R.string.character_created_label),
+                    value = formatDate(character.created)
+                )
+            }
 
             AnimatedVisibility(visible = character.origin.originName.isNotBlank()) {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Divider()
+                    HorizontalDivider()
                     CharacterMetaRow(
                         icon = Icons.Outlined.Place,
                         label = stringResource(id = R.string.character_origin_label),
@@ -317,6 +321,7 @@ private fun InfoBadge(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 private fun formatDate(raw: String): String {
     return runCatching {
         val instant = Instant.parse(raw)

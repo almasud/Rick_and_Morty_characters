@@ -7,20 +7,26 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import retrofit2.Response
 import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
 
 suspend inline fun <T> handleRestApiCall(apiCall: suspend () -> Response<T>): RemoteResult<T, DataError.Remote> {
     val response = try {
         apiCall()
-    } catch (_: SocketTimeoutException) {
-        return RemoteResult.Error(DataError.Remote.REQUEST_TIMEOUT)
-    } catch (_: UnresolvedAddressException) {
-        return RemoteResult.Error(DataError.Remote.NO_CONNECTION)
-    } catch (e: Throwable) {
-        Log.e("handleRestApiCall", "error: ${e.message}")
-        currentCoroutineContext().ensureActive()
+    } catch (e: Exception) {
+        when (e) {
+            is SocketTimeoutException ->
+                return RemoteResult.Error(DataError.Remote.REQUEST_TIMEOUT)
 
-        return RemoteResult.Error(DataError.Remote.UNKNOWN)
+            is UnresolvedAddressException, is UnknownHostException ->
+                return RemoteResult.Error(DataError.Remote.NO_CONNECTION)
+
+            else -> {
+                Log.e("handleRestApiCall", "error: $e")
+                currentCoroutineContext().ensureActive()
+                return RemoteResult.Error(DataError.Remote.UNKNOWN)
+            }
+        }
     }
 
     return responseToResult(response)

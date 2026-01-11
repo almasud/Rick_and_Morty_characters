@@ -30,6 +30,7 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -87,12 +88,17 @@ fun CharacterScreen(characterVM: CharacterVM, snackbarHostState: SnackbarHostSta
     LaunchedEffect(key1 = characters.loadState.refresh) {
         val errorState = characters.loadState.refresh as? LoadState.Error
         errorState?.let { loadState ->
-            snackbarHostState.showSnackbar(
+            val result = snackbarHostState.showSnackbar(
                 message = loadState.error.localizedMessage
                     ?: context.getString(R.string.unknown_error),
                 actionLabel = context.getString(R.string.retry),
                 duration = SnackbarDuration.Short
             )
+
+            when(result) {
+                SnackbarResult.Dismissed -> Unit
+                SnackbarResult.ActionPerformed -> characters.retry()
+            }
         }
     }
 

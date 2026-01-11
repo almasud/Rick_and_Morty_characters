@@ -12,6 +12,7 @@ import com.github.almasud.rickandmorty.character.data.mappers.toCharacterEntity
 import com.github.almasud.rickandmorty.character.data.sources.CharacterDataSource
 import com.github.almasud.rickandmorty.core.data.local.db.AppDatabase
 import com.github.almasud.rickandmorty.core.data.remote.models.RemoteResult
+import com.github.almasud.rickandmorty.core.presentation.extensions.toUiText
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
@@ -68,7 +69,7 @@ class CharacterRemoteMediator @Inject constructor(
 
                     val remoteKeys = characters.map {
                         CharacterRemoteKeyEntity(
-                            id = it.id,
+                            characterId = it.id,
                             prevKey = prevKey,
                             nextKey = nextKey
                         )
@@ -91,13 +92,13 @@ class CharacterRemoteMediator @Inject constructor(
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, CharacterEntity>) =
         state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { character ->
-                database.remoteKeyDao().getRemoteKeyByCharacterId(character.id)
+                database.remoteKeyDao().getRemoteKeyById(character.id)
             }
 
     private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, CharacterEntity>) =
         state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
             ?.let { character ->
-                database.remoteKeyDao().getRemoteKeyByCharacterId(character.id)
+                database.remoteKeyDao().getRemoteKeyById(character.id)
             }
 
     private suspend fun getRemoteKeyClosestToCurrentPosition(
@@ -105,7 +106,7 @@ class CharacterRemoteMediator @Inject constructor(
     ): CharacterRemoteKeyEntity? =
         state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { id ->
-                database.remoteKeyDao().getRemoteKeyByCharacterId(id)
+                database.remoteKeyDao().getRemoteKeyById(id)
             }
         }
 
