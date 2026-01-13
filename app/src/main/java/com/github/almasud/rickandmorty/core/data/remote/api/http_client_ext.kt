@@ -1,4 +1,4 @@
-package com.github.almasud.rickandmorty.character.data.remote.api
+package com.github.almasud.rickandmorty.core.data.remote.api
 
 import android.util.Log
 import com.github.almasud.rickandmorty.core.data.remote.models.RemoteResult
@@ -48,4 +48,3 @@ fun <T> responseToResult(response: Response<T>): RemoteResult<T, DataError.Remot
         else -> RemoteResult.Error(DataError.Remote.UNKNOWN)
     }
 }
-

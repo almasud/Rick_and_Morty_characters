@@ -12,7 +12,7 @@ import com.github.almasud.rickandmorty.character.data.mappers.toCharacterEntity
 import com.github.almasud.rickandmorty.character.data.sources.CharacterDataSource
 import com.github.almasud.rickandmorty.core.data.local.db.AppDatabase
 import com.github.almasud.rickandmorty.core.data.remote.models.RemoteResult
-import com.github.almasud.rickandmorty.core.presentation.extensions.toUiText
+import com.github.almasud.rickandmorty.core.domain.models.DataErrorException
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
@@ -84,7 +84,7 @@ class CharacterRemoteMediator @Inject constructor(
             }
 
             is RemoteResult.Error -> {
-                MediatorResult.Error(Exception(apiResponse.error.toString()))
+                MediatorResult.Error(DataErrorException(apiResponse.error))
             }
         }
     }

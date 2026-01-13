@@ -1,5 +1,6 @@
 package com.github.almasud.rickandmorty.character.presentation
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -54,8 +55,10 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
 import com.github.almasud.rickandmorty.R
 import com.github.almasud.rickandmorty.character.domain.models.Character
+import com.github.almasud.rickandmorty.core.domain.models.DataErrorException
 import com.github.almasud.rickandmorty.core.presentation.components.AppScaffold
 import com.github.almasud.rickandmorty.core.presentation.components.CharacterStatus
+import com.github.almasud.rickandmorty.core.presentation.extensions.toUiText
 import com.github.almasud.rickandmorty.core.presentation.navigation.NavItem
 
 @Composable
@@ -89,8 +92,7 @@ fun CharacterScreen(characterVM: CharacterVM, snackbarHostState: SnackbarHostSta
         val errorState = characters.loadState.refresh as? LoadState.Error
         errorState?.let { loadState ->
             val result = snackbarHostState.showSnackbar(
-                message = loadState.error.localizedMessage
-                    ?: context.getString(R.string.unknown_error),
+                message = loadState.error.toUserMessage(context),
                 actionLabel = context.getString(R.string.retry),
                 duration = SnackbarDuration.Short
             )
@@ -131,8 +133,7 @@ fun CharacterScreen(characterVM: CharacterVM, snackbarHostState: SnackbarHostSta
                 refreshState is LoadState.Loading -> CharactersLoading()
                 refreshState is LoadState.Error && characters.itemCount == 0 -> {
                     CharactersError(
-                        message = refreshState.error.localizedMessage
-                            ?: context.getString(R.string.unknown_error),
+                        message = refreshState.error.toUserMessage(context),
                         onRetry = characters::retry
                     )
                 }
@@ -248,6 +249,13 @@ private fun CharacterList(
         }
     }
 }
+
+private fun Throwable.toUserMessage(context: Context): String =
+    if (this is DataErrorException) {
+        dataError.toUiText().asString(context)
+    } else {
+        localizedMessage ?: context.getString(R.string.unknown_error)
+    }
 
 @Composable
 private fun CharacterCard(
